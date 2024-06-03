@@ -4,167 +4,122 @@ import pygame
 import numpy as np
 
 
-class GridWorldEnv(gym.Env):
-    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
+class TOGameEnv(gym.Env):
 
-    def __init__(self, render_mode=None, size=5):
-        self.size = size  # The size of the square grid
-        self.window_size = 512  # The size of the PyGame window
-
+    def __init__(self):
+        metadata = {
+            "min_card": 1,
+            "max_card": 13,
+            "min_point": 1,
+            "max_point": 10,
+            "target_point": 21,
+        }
         # Observations are dictionaries with the agent's and the target's location.
         # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
         self.observation_space = spaces.Dict(
             {
-                "agent": spaces.Box(0, size - 1, shape=(2,), dtype=int),
-                "target": spaces.Box(0, size - 1, shape=(2,), dtype=int),
+                "player": spaces.Box(1, 10, shape=(1,), dtype=int),
+                "banker": spaces.Box(1, 10, shape=(1,), dtype=int),
             }
         )
 
-        # We have 4 actions, corresponding to "right", "up", "left", "down", "right"
-        self.action_space = spaces.Discrete(4)
-
+        # We have 2 actions, corresponding to "twist", "stick"
+        self.action_space = spaces.Discrete(2)
+        self._index = 0
         """
         The following dictionary maps abstract actions from `self.action_space` to 
         the direction we will walk in if that action is taken.
-        I.e. 0 corresponds to "right", 1 to "up" etc.
+        I.e. 0 corresponds to "twist", 1 to "stick" etc.
         """
         self._action_to_direction = {
-            0: np.array([1, 0]),
-            1: np.array([0, 1]),
-            2: np.array([-1, 0]),
-            3: np.array([0, -1]),
+            0: np.array([0]),
+            1: np.array([1]),
         }
-
-        assert render_mode is None or render_mode in self.metadata["render_modes"]
-        self.render_mode = render_mode
-
-        """
-        If human-rendering is used, `self.window` will be a reference
-        to the window that we draw to. `self.clock` will be a clock that is used
-        to ensure that the environment is rendered at the correct framerate in
-        human-mode. They will remain `None` until human-mode is used for the
-        first time.
-        """
-        self.window = None
-        self.clock = None
 
     def _get_obs(self):
-        return {"agent": self._agent_location, "target": self._target_location}
+        return {"player": self._player_state, "banker": self._banker_show, "ace": self._ace}
 
-    def _get_info(self):
-        return {
-            "distance": np.linalg.norm(
-                self._agent_location - self._target_location, ord=1
+    def _upodate_banker_state(self):
+        if self._banker_state < 17:
+            new_card = self.deck[self._index]
+            self._index += 1
+            self._banker_state += new_card.clip(
+                min=TOGameEnv.metadata["min_point"], max=TOGameEnv.metadata["max_point"]
             )
-        }
+            self._banker_ace = self._banker_ace or new_card == 1
+        return self._banker_state
+
+    @staticmethod
+    def get_real_point(obs: int, ace: bool):
+        if not ace or np.abs(obs - 21) < 10:
+            return obs
+        else:
+            return obs + 10
 
     def reset(self, seed=None, options=None):
         # We need the following line to seed self.np_random
         super().reset(seed=seed)
 
-        # Choose the agent's location uniformly at random
-        self._agent_location = self.np_random.integers(0, self.size, size=2, dtype=int)
+        # Generate the deck: 1-13 repeated four times
+        self.deck = np.tile(
+            np.arange(self.metadata["min_card"], self.metadata["max_card"] + 1), 4
+        )
 
-        # We will sample the target's location randomly until it does not coincide with the agent's location
-        self._target_location = self._agent_location
-        while np.array_equal(self._target_location, self._agent_location):
-            self._target_location = self.np_random.integers(
-                0, self.size, size=2, dtype=int
-            )
+        # Shuffle the deck
+        self.np_random.shuffle(self.deck)
 
+        self._index = 4
+        _player_state = np.array([self.deck[0], self.deck[1]]).clip(
+            min=TOGameEnv.metadata["min_point"], max=TOGameEnv.metadata["max_point"]
+        )
+        self._player_state = _player_state.sum()
+        _banker_state = np.array([self.deck[2], self.deck[3]]).clip(
+            min=TOGameEnv.metadata["min_point"], max=TOGameEnv.metadata["max_point"]
+        )
+        self._banker_show = self.deck[2]
+        self._banker_state = _banker_state.sum()
+
+        self._ace = np.any(self._player_state == 1)
+        self._banker_ace = np.any(self._banker_state == 1)
         observation = self._get_obs()
-        info = self._get_info()
-
-        if self.render_mode == "human":
-            self._render_frame()
+        info = None
 
         return observation, info
 
     def step(self, action):
         # Map the action (element of {0,1,2,3}) to the direction we walk in
-        direction = self._action_to_direction[action]
+        action = self._action_to_direction[action]
         # We use `np.clip` to make sure we don't leave the grid
-        self._agent_location = np.clip(
-            self._agent_location + direction, 0, self.size - 1
-        )
-        # An episode is done iff the agent has reached the target
-        terminated = np.array_equal(self._agent_location, self._target_location)
-        reward = 1 if terminated else 0  # Binary sparse rewards
-        observation = self._get_obs()
-        info = self._get_info()
+        if action == 0:
+            new_card = self.deck[self._index]
+            self._index += 1
+            self._player_state += new_card.clip(
+                min=TOGameEnv.metadata["min_point"], max=TOGameEnv.metadata["max_point"]
+            )
+            self._ace = self._ace or new_card == 1 
+        else:
+            self._upodate_banker_state()
 
-        if self.render_mode == "human":
-            self._render_frame()
+        terminated = (
+            action != 0 
+            or self._player_state > 21
+        )
+
+        reward = 0
+        if terminated:
+            player_fine_score =  TOGameEnv.get_real_point(self._player_state, self.ace)
+            banker_fine_score =  TOGameEnv.get_real_point(self._banker_state, self._banker_ace)
+            if player_fine_score > banker_fine_score:
+                reward = 1
+            elif player_fine_score == banker_fine_score:
+                reward = 0
+            else:
+                reward = -1
+                
+        observation = self._get_obs()
+        info = None
 
         return observation, reward, terminated, False, info
 
-    def render(self):
-        if self.render_mode == "rgb_array":
-            return self._render_frame()
-
-    def _render_frame(self):
-        if self.window is None and self.render_mode == "human":
-            pygame.init()
-            pygame.display.init()
-            self.window = pygame.display.set_mode((self.window_size, self.window_size))
-        if self.clock is None and self.render_mode == "human":
-            self.clock = pygame.time.Clock()
-
-        canvas = pygame.Surface((self.window_size, self.window_size))
-        canvas.fill((255, 255, 255))
-        pix_square_size = (
-            self.window_size / self.size
-        )  # The size of a single grid square in pixels
-
-        # First we draw the target
-        pygame.draw.rect(
-            canvas,
-            (255, 0, 0),
-            pygame.Rect(
-                pix_square_size * self._target_location,
-                (pix_square_size, pix_square_size),
-            ),
-        )
-        # Now we draw the agent
-        pygame.draw.circle(
-            canvas,
-            (0, 0, 255),
-            (self._agent_location + 0.5) * pix_square_size,
-            pix_square_size / 3,
-        )
-
-        # Finally, add some gridlines
-        for x in range(self.size + 1):
-            pygame.draw.line(
-                canvas,
-                0,
-                (0, pix_square_size * x),
-                (self.window_size, pix_square_size * x),
-                width=3,
-            )
-            pygame.draw.line(
-                canvas,
-                0,
-                (pix_square_size * x, 0),
-                (pix_square_size * x, self.window_size),
-                width=3,
-            )
-
-        if self.render_mode == "human":
-            # The following line copies our drawings from `canvas` to the visible window
-            self.window.blit(canvas, canvas.get_rect())
-            pygame.event.pump()
-            pygame.display.update()
-
-            # We need to ensure that human-rendering occurs at the predefined framerate.
-            # The following line will automatically add a delay to keep the framerate stable.
-            self.clock.tick(self.metadata["render_fps"])
-        else:  # rgb_array
-            return np.transpose(
-                np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
-            )
-
     def close(self):
-        if self.window is not None:
-            pygame.display.quit()
-            pygame.quit()
+        return None
