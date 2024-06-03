@@ -14,7 +14,7 @@ class BlackjackEnv(gym.Env):
         }
 
     def __init__(self):
-       
+
         self.observation_space = spaces.Dict(
             {
                 "player": spaces.Box(1, 10, shape=(1,), dtype=int),
@@ -39,13 +39,19 @@ class BlackjackEnv(gym.Env):
         return {"player": self._player_state, "banker": self._banker_show, "ace": self._ace}
 
     def _upodate_banker_state(self):
-        if self._banker_state < 17:
+        while self._banker_state < 17:
             new_card = self.deck[self._index]
             self._index += 1
             self._banker_state += new_card.clip(
                 min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"]
             )
+            if new_card == 1:
+                if self._banker_state + 10 <= 21:
+                    self._banker_state += 10
+                    self._banker_ace = True 
             self._banker_ace = self._banker_ace or new_card == 1
+        if self._banker_state > 21 and self._banker_ace:
+            self._banker_state -= 10
         return self._banker_state
 
     @staticmethod
@@ -80,6 +86,8 @@ class BlackjackEnv(gym.Env):
 
         self._ace = np.any(self._player_state == 1)
         self._banker_ace = np.any(self._banker_state == 1)
+        if self._banker_ace:
+            self._banker_state += 10
         observation = self._get_obs()
         info = None
 
@@ -114,7 +122,7 @@ class BlackjackEnv(gym.Env):
                 reward = 0
             else:
                 reward = -1
-                
+
         observation = self._get_obs()
         info = None
 
