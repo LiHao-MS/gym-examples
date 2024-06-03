@@ -4,18 +4,17 @@ import pygame
 import numpy as np
 
 
-class TOGameEnv(gym.Env):
-
-    def __init__(self):
-        metadata = {
+class BlackjackEnv(gym.Env):
+    metadata = {
             "min_card": 1,
             "max_card": 13,
             "min_point": 1,
             "max_point": 10,
             "target_point": 21,
         }
-        # Observations are dictionaries with the agent's and the target's location.
-        # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
+
+    def __init__(self):
+       
         self.observation_space = spaces.Dict(
             {
                 "player": spaces.Box(1, 10, shape=(1,), dtype=int),
@@ -44,7 +43,7 @@ class TOGameEnv(gym.Env):
             new_card = self.deck[self._index]
             self._index += 1
             self._banker_state += new_card.clip(
-                min=TOGameEnv.metadata["min_point"], max=TOGameEnv.metadata["max_point"]
+                min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"]
             )
             self._banker_ace = self._banker_ace or new_card == 1
         return self._banker_state
@@ -70,11 +69,11 @@ class TOGameEnv(gym.Env):
 
         self._index = 4
         _player_state = np.array([self.deck[0], self.deck[1]]).clip(
-            min=TOGameEnv.metadata["min_point"], max=TOGameEnv.metadata["max_point"]
+            min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"]
         )
         self._player_state = _player_state.sum()
         _banker_state = np.array([self.deck[2], self.deck[3]]).clip(
-            min=TOGameEnv.metadata["min_point"], max=TOGameEnv.metadata["max_point"]
+            min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"]
         )
         self._banker_show = self.deck[2]
         self._banker_state = _banker_state.sum()
@@ -94,7 +93,7 @@ class TOGameEnv(gym.Env):
             new_card = self.deck[self._index]
             self._index += 1
             self._player_state += new_card.clip(
-                min=TOGameEnv.metadata["min_point"], max=TOGameEnv.metadata["max_point"]
+                min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"]
             )
             self._ace = self._ace or new_card == 1 
         else:
@@ -107,8 +106,8 @@ class TOGameEnv(gym.Env):
 
         reward = 0
         if terminated:
-            player_fine_score =  TOGameEnv.get_real_point(self._player_state, self.ace)
-            banker_fine_score =  TOGameEnv.get_real_point(self._banker_state, self._banker_ace)
+            player_fine_score =  BlackjackEnv.get_real_point(self._player_state, self.ace)
+            banker_fine_score =  BlackjackEnv.get_real_point(self._banker_state, self._banker_ace)
             if player_fine_score > banker_fine_score:
                 reward = 1
             elif player_fine_score == banker_fine_score:
