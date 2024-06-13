@@ -19,6 +19,7 @@ class BlackjackEnv(gym.Env):
             {
                 "player": spaces.Box(1, 10, shape=(1,), dtype=int),
                 "banker": spaces.Box(1, 10, shape=(1,), dtype=int),
+                "ace": spaces.Discrete(2),
             }
         )
 
@@ -89,7 +90,7 @@ class BlackjackEnv(gym.Env):
         if self._banker_ace:
             self._banker_state += 10
         observation = self._get_obs()
-        info = None
+        info = {}
 
         return observation, info
 
