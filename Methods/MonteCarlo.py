@@ -18,23 +18,37 @@ def run_episode(env, Q, seed, epsilon):
 
 # ε-greedy策略
 def epsilon_greedy_policy(Q, state, epsilon):
-    action_values = [Q[(state, a)] for a in [0, 1]]
-    if action_values[0] - action_values[1] == 0 or np.random.rand() < epsilon:
+    
+    if np.random.rand() < epsilon:
         return np.random.choice([0, 1])  # 探索: 随机选择动作
     else:
+        action_values = [Q[(state, a)] for a in [0, 1]]
+        if action_values[0] - action_values[1] == 0 :
+            return np.random.choice([0, 1])
         # 利用: 选择具有最大Q值的动作
         return np.argmax(action_values)
 
-
-def monte_carlo_prediction(policy, env, num_episodes, gamma):
-    V = defaultdict(float)
+# First Vist
+def monte_carlo_prediction(env, num_episodes, gamma, seed):
+    Q = defaultdict(float)
     N = defaultdict(int)
-
-    for _ in range(num_episodes):
-        episode = run_episode(env, policy)
+    epsilon = 0.3
+    for k in range(num_episodes):
+        if k % 100 == 0:
+            epsilon = max(0.01, epsilon - 0.01)
+        episode = run_episode(env, Q, seed, epsilon)
         G = 0
-        for state, action, reward in reversed(episode):
+        first_occurrences = {}
+        for i, (state, action, reward) in enumerate(episode):
+            if (state, action) not in first_occurrences:
+                first_occurrences[(state, action)] = i
+
+        # 反向遍历，用首次出现的索引进行G值的计算
+        for i in reversed(range(len(episode))):
+            state, action, reward = episode[i]
             G = reward + gamma * G
-            Q[state] += (G - Q[state]) / N[state]
+            if i == first_occurrences[(state, action)]:  # 检查是否为首次出现
+                N[(state, action)] += 1
+                Q[(state, action)] += (G - Q[(state, action)]) / N[(state, action)]
 
     return Q
