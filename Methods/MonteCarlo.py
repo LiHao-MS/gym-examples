@@ -1,32 +1,33 @@
 import numpy as np
 from collections import defaultdict
 import gymnasium as gym
-
+from Methods.utils import epsilon_greedy_policy
 
 def run_episode(env, Q, seed, epsilon):
-    state = env.reset(seed=seed)
+    state, _ = env.reset(seed=seed)
     done = False
     episode = []
-
+    state = frozenset(state.items())
     while not done:
         action = epsilon_greedy_policy(Q, state, epsilon)
         next_state, reward, done, _, info = env.step(action)
         episode.append((state, action, reward))
+        next_state = frozenset(next_state.items())
         state = next_state
 
     return episode
 
-# ε-greedy策略
-def epsilon_greedy_policy(Q, state, epsilon):
+# # ε-greedy策略
+# def epsilon_greedy_policy(Q, state, epsilon):
     
-    if np.random.rand() < epsilon:
-        return np.random.choice([0, 1])  # 探索: 随机选择动作
-    else:
-        action_values = [Q[(state, a)] for a in [0, 1]]
-        if action_values[0] - action_values[1] == 0 :
-            return np.random.choice([0, 1])
-        # 利用: 选择具有最大Q值的动作
-        return np.argmax(action_values)
+#     if np.random.rand() < epsilon:
+#         return np.random.choice([0, 1])  # 探索: 随机选择动作
+#     else:
+#         action_values = [Q[(state, a)] for a in [0, 1]]
+#         if action_values[0] - action_values[1] == 0 :
+#             return np.random.choice([0, 1])
+#         # 利用: 选择具有最大Q值的动作
+#         return np.argmax(action_values)
 
 # First Vist
 def monte_carlo_prediction(env, num_episodes, gamma, seed):

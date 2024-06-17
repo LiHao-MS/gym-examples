@@ -11,9 +11,11 @@ class BlackjackEnv(gym.Env):
             "min_point": 1,
             "max_point": 10,
             "target_point": 21,
+            "render_modes": ["human", "rgb_array"], 
+            "render_fps": 4
         }
 
-    def __init__(self):
+    def __init__(self, render_mode=None, size=5):
 
         self.observation_space = spaces.Dict(
             {
@@ -35,11 +37,12 @@ class BlackjackEnv(gym.Env):
             0: np.array([0]),
             1: np.array([1]),
         }
+        self.render_mode = render_mode
 
     def _get_obs(self):
         return {"player": self._player_state, "banker": self._banker_show, "ace": self._ace}
 
-    def _upodate_banker_state(self):
+    def _update_banker_state(self):
         while self._banker_state < 17:
             new_card = self.deck[self._index]
             self._index += 1
@@ -106,16 +109,16 @@ class BlackjackEnv(gym.Env):
             )
             self._ace = self._ace or new_card == 1 
         else:
-            self._upodate_banker_state()
+            self._update_banker_state()
 
         terminated = (
-            action != 0 
+            action == 1 
             or self._player_state > 21
         )
 
         reward = 0
         if terminated:
-            player_fine_score =  BlackjackEnv.get_real_point(self._player_state, self.ace)
+            player_fine_score =  BlackjackEnv.get_real_point(self._player_state, self._ace)
             banker_fine_score =  BlackjackEnv.get_real_point(self._banker_state, self._banker_ace)
             if player_fine_score > banker_fine_score:
                 reward = 1
@@ -125,7 +128,7 @@ class BlackjackEnv(gym.Env):
                 reward = -1
 
         observation = self._get_obs()
-        info = None
+        info = {}
 
         return observation, reward, terminated, False, info
 

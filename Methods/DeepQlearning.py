@@ -1,4 +1,3 @@
-import gym
 import numpy as np
 import random
 import torch
@@ -23,11 +22,16 @@ class DQN(nn.Module):
 
 def epsilon_greedy_policy(state, epsilon, policy_net, env):
     if random.random() > epsilon:
-        state = torch.tensor([state], dtype=torch.float)
+        state = torch.tensor(encode_state(state), dtype=torch.float)
         with torch.no_grad():
             return policy_net(state).max(1)[1].item()
     else:
         return env.action_space.sample()
+
+
+def encode_state(state):
+    # Example state: {'player': 1, 'banker': 1, 'usable_ace': True}
+    return [state["player"], state["banker"], 1 if state["ace"] else 0]
 
 
 def optimize_model(memory, batch_size, policy_net, target_net, optimizer, gamma):
@@ -36,10 +40,14 @@ def optimize_model(memory, batch_size, policy_net, target_net, optimizer, gamma)
     batch = random.sample(memory, batch_size)
     state_batch, action_batch, reward_batch, next_state_batch, done_batch = zip(*batch)
 
-    state_batch = torch.tensor(state_batch, dtype=torch.float)
+    state_batch = torch.tensor(
+        [encode_state(s) for s in state_batch], dtype=torch.float
+    )
     action_batch = torch.tensor(action_batch, dtype=torch.long)
     reward_batch = torch.tensor(reward_batch, dtype=torch.float)
-    next_state_batch = torch.tensor(next_state_batch, dtype=torch.float)
+    next_state_batch = torch.tensor(
+        [encode_state(s) for s in next_state_batch], dtype=torch.float
+    )
     done_batch = torch.tensor(done_batch, dtype=torch.float)
 
     state_action_values = policy_net(state_batch).gather(1, action_batch.unsqueeze(1))
@@ -66,8 +74,8 @@ def train_dqn_blackjack(
     epsilon_decay=0.995,
     lr=0.001,
 ):
-    input_size = env.observation_space.shape[0]
-    output_size = env.action_space.n
+    input_size = 3
+    output_size = 2
 
     policy_net = DQN(input_size, output_size)
     target_net = DQN(input_size, output_size)
@@ -79,11 +87,11 @@ def train_dqn_blackjack(
 
     epsilon = epsilon_start
     for episode in range(num_episodes):
-        state = env.reset()
+        state, _ = env.reset()
         done = False
         while not done:
             action = epsilon_greedy_policy(state, epsilon, policy_net, env)
-            next_state, reward, done, _ = env.step(action)
+            next_state, reward, done, _, info = env.step(action)
             memory.append((state, action, reward, next_state, done))
             state = next_state
             optimize_model(memory, batch_size, policy_net, target_net, optimizer, gamma)
@@ -92,5 +100,4 @@ def train_dqn_blackjack(
             target_net.load_state_dict(policy_net.state_dict())
             print(f"Episode {episode}: Reward {reward}, Epsilon {epsilon}")
 
-    env.close()
     print("Training completed.")
