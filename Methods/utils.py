@@ -15,8 +15,8 @@ def epsilon_greedy_policy(Q, state, epsilon):
 
 
 def encode_state(state):
-    # Example state: {'player': 1, 'banker': 1, 'usable_ace': True}
-    return [state["player"], state["banker"], 1 if state["ace"] else 0]
+    # Example state: {'player': 1, 'dealer': 1, 'usable_ace': True}
+    return [state["player"], state["dealer"], 1 if state["ace"] else 0]
 
 
 def greedy_policy(Q, state):
