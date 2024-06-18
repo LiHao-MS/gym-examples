@@ -1,0 +1,14 @@
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:127: UserWarning: [33mWARN: The obs returned by the `reset()` method should be an int or np.int64, actual type: <class 'numpy.bool_'>[0m
+  logger.warn(f"{pre} should be an int or np.int64, actual type: {type(obs)}")
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.[0m
+  logger.warn(f"{pre} is not within the observation space.")
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:131: UserWarning: [33mWARN: The obs returned by the `reset()` method was expecting a numpy array, actual type: <class 'numpy.int64'>[0m
+  logger.warn(
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/spaces/box.py:240: UserWarning: [33mWARN: Casting input x to numpy array.[0m
+  gym.logger.warn("Casting input x to numpy array.")
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:127: UserWarning: [33mWARN: The obs returned by the `step()` method should be an int or np.int64, actual type: <class 'numpy.bool_'>[0m
+  logger.warn(f"{pre} should be an int or np.int64, actual type: {type(obs)}")
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.[0m
+  logger.warn(f"{pre} is not within the observation space.")
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:131: UserWarning: [33mWARN: The obs returned by the `step()` method was expecting a numpy array, actual type: <class 'numpy.int64'>[0m
+  logger.warn(
