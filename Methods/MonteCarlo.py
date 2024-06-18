@@ -3,8 +3,8 @@ from collections import defaultdict
 import gymnasium as gym
 from Methods.utils import epsilon_greedy_policy
 
-def run_episode(env, Q, seed, epsilon):
-    state, _ = env.reset(seed=seed)
+def run_episode(env, Q, epsilon):
+    state, _ = env.reset()
     done = False
     episode = []
     state = frozenset(state.items())
@@ -17,27 +17,16 @@ def run_episode(env, Q, seed, epsilon):
 
     return episode
 
-# # ε-greedy策略
-# def epsilon_greedy_policy(Q, state, epsilon):
-    
-#     if np.random.rand() < epsilon:
-#         return np.random.choice([0, 1])  # 探索: 随机选择动作
-#     else:
-#         action_values = [Q[(state, a)] for a in [0, 1]]
-#         if action_values[0] - action_values[1] == 0 :
-#             return np.random.choice([0, 1])
-#         # 利用: 选择具有最大Q值的动作
-#         return np.argmax(action_values)
 
 # First Vist
-def monte_carlo_prediction(env, num_episodes, gamma, seed):
+def monte_carlo_prediction(env, num_episodes, gamma):
     Q = defaultdict(float)
     N = defaultdict(int)
     epsilon = 0.3
     for k in range(num_episodes):
         if k % 100 == 0:
             epsilon = max(0.01, epsilon - 0.01)
-        episode = run_episode(env, Q, seed, epsilon)
+        episode = run_episode(env, Q, epsilon)
         G = 0
         first_occurrences = {}
         for i, (state, action, reward) in enumerate(episode):

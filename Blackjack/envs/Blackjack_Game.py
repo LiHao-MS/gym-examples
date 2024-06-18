@@ -15,7 +15,7 @@ class BlackjackEnv(gym.Env):
             "render_fps": 4
         }
 
-    def __init__(self, render_mode=None, size=5):
+    def __init__(self, render_mode=None, size=5, seed=1):
 
         self.observation_space = spaces.Dict(
             {
@@ -28,6 +28,7 @@ class BlackjackEnv(gym.Env):
         # We have 2 actions, corresponding to "twist", "stick"
         self.action_space = spaces.Discrete(2)
         self._index = 0
+        self.seed = seed
         """
         The following dictionary maps abstract actions from `self.action_space` to 
         the direction we will walk in if that action is taken.
@@ -73,6 +74,8 @@ class BlackjackEnv(gym.Env):
 
     def reset(self, seed=None, options=None):
         # We need the following line to seed self.np_random
+        np.random.seed(self.seed)
+        self.seed = np.random.randint(0, 2**32 - 1)
         super().reset(seed=seed)
 
         # Generate the deck: 1-13 repeated four times
@@ -113,7 +116,7 @@ class BlackjackEnv(gym.Env):
             self._player_state += new_card.clip(
                 min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"]
             )
-            
+
             self._ace = self._ace or new_card == 1 
         else:
             self._update_banker_state()
