@@ -17,7 +17,7 @@ def compare_methods(env, methods, num_episodes=1000):
     results = {}
     for name, method in methods.items():
         total_rewards = []
-        for episode in range(num_episodes):
+        for episode in range(1000):
             state, _ = env.reset()
             done = False
             total_reward = 0

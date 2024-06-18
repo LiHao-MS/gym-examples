@@ -81,8 +81,6 @@ def train_dqn_blackjack(
     memory = []
 
     epsilon = epsilon_start
-    rewards = []  # List to store total rewards per episode
-    epsilons = []  # List to store epsilon values over training
 
     for episode in range(num_episodes):
         state, _ = env.reset()
@@ -96,13 +94,9 @@ def train_dqn_blackjack(
             total_reward += reward
             optimize_model(memory, batch_size, policy_net, target_net, optimizer, gamma)
 
-        rewards.append(total_reward)
-        epsilons.append(epsilon)
-       
-
         if episode % 50 == 0:
             target_net.load_state_dict(policy_net.state_dict())
             epsilon = max(epsilon_end, epsilon_decay * epsilon)
             # print(f"Episode {episode}: Reward {total_reward}, Epsilon {epsilon}")
 
-    return policy_net, rewards, epsilons
+    return policy_net

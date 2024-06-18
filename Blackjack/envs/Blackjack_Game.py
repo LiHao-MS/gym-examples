@@ -15,7 +15,7 @@ class BlackjackEnv(gym.Env):
             "render_fps": 4
         }
 
-    def __init__(self, render_mode=None, size=5, seed=0):
+    def __init__(self, render_mode=None, size=5, seed=72):
 
         self.observation_space = spaces.Dict(
             {
@@ -67,8 +67,10 @@ class BlackjackEnv(gym.Env):
 
     @staticmethod
     def get_real_point(obs: int, ace: bool):
-        if not ace or 21 - obs < 10:
+        if not ace or (21 - obs < 10 and obs <= 21):
             return obs
+        elif obs > 21:
+            return 22
         else:
             return obs + 10
 
@@ -94,7 +96,7 @@ class BlackjackEnv(gym.Env):
         _banker_state = np.array([self.deck[2], self.deck[3]]).clip(
             min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"]
         )
-        self._banker_show = self.deck[2]
+        self._banker_show = self.deck[2].clip(min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"])
         self.banker_state = _banker_state.sum()
 
         self._ace = np.any(_player_state == 1)
@@ -127,9 +129,10 @@ class BlackjackEnv(gym.Env):
         if terminated:
             player_fine_score =  BlackjackEnv.get_real_point(self.player_state, self._ace)
             banker_fine_score =  BlackjackEnv.get_real_point(self.banker_state, self._banker_ace)
-            if player_fine_score > banker_fine_score:
+            self.player_state = player_fine_score
+            if player_fine_score > banker_fine_score and player_fine_score <= 21 and banker_fine_score <= 21:
                 reward = 1
-            elif player_fine_score == banker_fine_score:
+            elif player_fine_score == banker_fine_score or (player_fine_score > 21 and banker_fine_score > 21):
                 reward = 0
             else:
                 reward = -1

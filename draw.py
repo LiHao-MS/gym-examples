@@ -7,8 +7,6 @@ from Methods.utils import encode_state
 
 # 使用同一色彩映射和范围
 cmap = "viridis"
-vmin = -1
-vmax = 3
 
 def plot_value_function_from_dict(value_dict, title="Value Function"):
     # 玩家可能的点数范围是12到21，庄家展示的牌可能是从1到10
@@ -47,7 +45,7 @@ def plot_value_function_from_dict(value_dict, title="Value Function"):
         )
 
         ax = axes[idx]
-        ax.plot_surface(x, y, z, cmap=cmap, vmin=vmin, vmax=vmax)
+        ax.plot_surface(x, y, z, cmap=cmap)
 
         ax.set_xlabel("Banker Showing")
         ax.set_ylabel("Player Hand")
@@ -61,8 +59,8 @@ def plot_value_function_from_dict(value_dict, title="Value Function"):
 
 
 def plot_value_function_from_dqn(model, title="DQN Value Function"):
-    player_range = np.arange(2, 22)  # 玩家点数从2到21
-    banker_range = np.arange(1, 14)  # 庄家展示的牌从1到10
+    player_range = np.arange(2, 23)  # 玩家点数从2到21
+    banker_range = np.arange(1, 11)  # 庄家展示的牌从1到10
     usable_ace = [False, True]  # 是否有可用的Ace
 
     # 创建3D图的两个子图，对应有无可用Ace
@@ -93,7 +91,7 @@ def plot_value_function_from_dqn(model, title="DQN Value Function"):
         )
 
         ax = axes[idx]  # 根据索引选择对应的子图
-        ax.plot_surface(x, y, z, cmap=cmap, vmin=vmin, vmax=vmax)  # 绘制3D图
+        ax.plot_surface(x, y, z, cmap=cmap)  # 绘制3D图
 
         ax.set_xlabel("Banker Showing")
         ax.set_ylabel("Player Hand")
@@ -129,8 +127,8 @@ def plot_training_info(rewards, epsilons, title="Training Performance"):
 
 
 def plot_optimal_policy_from_dic(value_dict, title="Optimal Policy Value Function"):
-    player_range = np.arange(2, 22)  # 玩家点数从2到21
-    banker_range = np.arange(1, 14)  # 庄家展示的牌从1到10
+    player_range = np.arange(2, 23)  # 玩家点数从2到21
+    banker_range = np.arange(1, 11)  # 庄家展示的牌从1到10
 
     # 准备数据：遍历玩家和庄家的所有组合，对于每种组合，比较有Ace和无Ace的情况，取最大值
     x, y = np.meshgrid(banker_range, player_range)
@@ -159,7 +157,7 @@ def plot_optimal_policy_from_dic(value_dict, title="Optimal Policy Value Functio
 
     # 创建3D图
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"}, figsize=(12, 10))
-    surf = ax.plot_surface(x, y, z, cmap=cmap, vmin=vmin, vmax=vmax)
+    surf = ax.plot_surface(x, y, z, cmap=cmap)
     plt.tight_layout()
 
     ax.set_xlabel("Banker Showing")
@@ -174,6 +172,7 @@ def plot_optimal_policy_from_dic(value_dict, title="Optimal Policy Value Functio
     # 保存图像
     plt.savefig("pics/{}.png".format(title))
     # plt.show()
+
 
 def plot_optimal_policy_from_dqn(model, title="Optimal Policy Value Function"):
     player_range = np.arange(2, 22)  # 玩家点数从2到21
@@ -196,7 +195,7 @@ def plot_optimal_policy_from_dqn(model, title="Optimal Policy Value Function"):
 
     # 创建3D图
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"}, figsize=(12, 10))
-    surf = ax.plot_surface(x, y, z, cmap=cmap, vmin=vmin, vmax=vmax)
+    surf = ax.plot_surface(x, y, z, cmap=cmap)
     plt.tight_layout()
 
     ax.set_xlabel("Banker Showing")

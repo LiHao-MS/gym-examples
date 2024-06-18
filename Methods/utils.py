@@ -4,7 +4,6 @@ import torch
 
 # ε-greedy策略
 def epsilon_greedy_policy(Q, state, epsilon):
-
     if np.random.rand() < epsilon:
         return np.random.choice([0, 1])  # 探索: 随机选择动作
     else:
@@ -29,7 +28,7 @@ def greedy_policy(Q, state):
 
 
 def save_dict_to_pickle(dic, filename):
-    with open("Models/{}.json".format(filename), "wb") as f:
+    with open("Models/{}.pkl".format(filename), "wb") as f:
         pickle.dump(dic, f)
 
 
@@ -41,6 +40,6 @@ def load_dict_from_pickle(filename):
     # Load the dictionary from a pickle file
     with open(f"Models/{filename}.pkl", "rb") as f:
         return pickle.load(f)
-    
+
 def load_net_from_model(net, filename):
     return net.load_state_dict(torch.load(f"Models/{filename}.pth"))   
