@@ -130,7 +130,7 @@ class BlackjackEnv(gym.Env):
             player_fine_score =  BlackjackEnv.get_real_point(self.player_state, self._ace)
             dealer_fine_score =  BlackjackEnv.get_real_point(self.dealer_state, self._dealer_ace)
             self.player_state = player_fine_score
-            if player_fine_score > dealer_fine_score and player_fine_score <= 21:
+            if (player_fine_score > dealer_fine_score and player_fine_score <= 21) or (dealer_fine_score > 21 and player_fine_score <= 21):
                 reward = 1
             elif player_fine_score == dealer_fine_score or (player_fine_score > 21 and dealer_fine_score > 21):
                 reward = 0
