@@ -10,9 +10,12 @@ To solve the blackjack game, I implement four methods: Monte Carlo, Sarsa, Q-Lea
 
 === Monte Carlo
 Using first visit Monte Carlo method to solve the blackjack game. 
+#image("pics/MC Prediction Value Function - 10000 Episodes.png", height: 40%)
 === Sarsa
 
-$ Q(s, a) arrow.l Q(s, a) + Alpha \left[ r + \gamma \max_{a'} Q(s', a') - Q(s, a) \right] $
+$Q(s, a) arrow.l Q(s, a) + alpha [ r + gamma max_a' Q(s', a') - Q(s, a) ]$ where $s'$ is the next state, $a'$ is the next action, $r$ is the reward, $alpha$ is the learning rate, and $gamma$ is the discount factor.
+
+#image("pics/Sarsa Prediction Value Function - 10000 Episodes.png", height: 40%)
 
 === Q-Learning
 

@@ -14,7 +14,7 @@ def plot_value_function_from_dict(value_dict, title="Value Function"):
     dealer_range = np.arange(1, 11).tolist()
     usable_ace = [False, True]
 
-    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(15, 12), subplot_kw={"projection": "3d"})
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(20, 11), subplot_kw={"projection": "3d"})
     axes = axes.flatten()
     plt.tight_layout()
 
@@ -55,7 +55,7 @@ def plot_value_function_from_dict(value_dict, title="Value Function"):
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
-    fig.suptitle(title)
+    # fig.suptitle(title)
     plt.savefig("pics/{}.png".format(title))
     # plt.show()
 
@@ -66,7 +66,7 @@ def plot_value_function_from_dqn(model, title="DQN Value Function"):
     usable_ace = [False, True]  # 是否有可用的Ace
 
     # 创建3D图的两个子图，对应有无可用Ace
-    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(15, 12), subplot_kw={"projection": "3d"})
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(20, 11), subplot_kw={"projection": "3d"})
     axes = axes.flatten()
     plt.tight_layout()
 
@@ -103,7 +103,7 @@ def plot_value_function_from_dqn(model, title="DQN Value Function"):
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
-    fig.suptitle(title)
+    # fig.suptitle(title)
     plt.savefig("pics/{}.png".format(title))
     # plt.show()
 
@@ -125,7 +125,7 @@ def plot_training_info(rewards, epsilons, title="Training Performance"):
     ax2.tick_params(axis="y", labelcolor=color)
 
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
-    plt.title(title)
+    # plt.title(title)
     plt.savefig("pics/{}.png".format(title))
     # plt.show()
 
@@ -167,7 +167,7 @@ def plot_optimal_policy_from_dic(value_dict, title="Optimal Policy Value Functio
     ax.set_xlabel("dealer Showing")
     ax.set_ylabel("Player Hand")
     ax.set_zlabel("Maximum Value")
-    ax.set_title(title)
+    # ax.set_title(title)
     ax.view_init(ax.elev, -120)
 
     # 添加颜色条

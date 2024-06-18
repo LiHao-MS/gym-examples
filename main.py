@@ -72,7 +72,7 @@ def load():
         plot_value_function_from_dqn(policy_net, title="DQN Value Function - {} Episodes".format(num_episodes))
 
         methods = {"MC": Q1, "Sarsa": Q2, "Q-Learning": Q3, "DQN": policy_net}
-        compare_methods(env, methods, num_episodes=num_episodes)
+        # compare_methods(env, methods, num_episodes=num_episodes)
 
 
 if __name__ == "__main__":
