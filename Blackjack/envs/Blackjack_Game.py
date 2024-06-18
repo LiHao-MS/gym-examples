@@ -40,6 +40,12 @@ class BlackjackEnv(gym.Env):
         self.render_mode = render_mode
 
     def _get_obs(self):
+        if isinstance(self._ace, np.ndarray):
+            self._ace = self._ace.item()
+        if isinstance(self._banker_show, np.ndarray):
+            self._banker_show = self._banker_show.item()
+        if isinstance(self._player_state, np.ndarray):
+            self._player_state = self._player_state.item()
         return {"player": self._player_state, "banker": self._banker_show, "ace": self._ace}
 
     def _update_banker_state(self):
@@ -107,6 +113,7 @@ class BlackjackEnv(gym.Env):
             self._player_state += new_card.clip(
                 min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"]
             )
+            
             self._ace = self._ace or new_card == 1 
         else:
             self._update_banker_state()

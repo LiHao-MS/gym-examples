@@ -3,7 +3,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.optim as optim
-
+from Methods.utils import encode_state
 
 class DQN(nn.Module):
     def __init__(self, input_size, output_size):
@@ -27,11 +27,6 @@ def epsilon_greedy_policy(state, epsilon, policy_net, env):
             return policy_net(state).max(0)[-1].item()
     else:
         return env.action_space.sample()
-
-
-def encode_state(state):
-    # Example state: {'player': 1, 'banker': 1, 'usable_ace': True}
-    return [state["player"], state["banker"], 1 if state["ace"] else 0]
 
 
 def optimize_model(memory, batch_size, policy_net, target_net, optimizer, gamma):
@@ -110,7 +105,7 @@ def train_dqn_blackjack(
 
         if episode % 50 == 0:
             target_net.load_state_dict(policy_net.state_dict())
-            print(f"Episode {episode}: Reward {total_reward}, Epsilon {epsilon}")
+            # print(f"Episode {episode}: Reward {total_reward}, Epsilon {epsilon}")
 
     return policy_net, rewards, epsilons
 

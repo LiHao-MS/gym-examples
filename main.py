@@ -13,16 +13,16 @@ env = gym.make("Blackjack/Blackjack-v0")
 
 # 依次运行四个方法
 def main():
-    num_episodes = 100000
+    num_episodes = 10000
     gamma = 0.99
-    Q1 = monte_carlo_prediction(env, num_episodes=100000, gamma=gamma, seed=0)
+    Q1 = monte_carlo_prediction(env, num_episodes=num_episodes, gamma=gamma, seed=0)
     plot_value_function_from_dict(Q1, title="MC Prediction Value Function")
-    Q2 = sarsa(env, num_episodes=100000, gamma=gamma, alpha=0.1, epsilon=0.1)
+    Q2 = sarsa(env, num_episodes=num_episodes, gamma=gamma, alpha=0.1, epsilon=0.1)
     plot_value_function_from_dict(Q2, title="Sarsa Prediction Value Function")
-    Q3 = q_learning(env, num_episodes=100000, gamma=gamma, alpha=0.1, epsilon=0.1)
+    Q3 = q_learning(env, num_episodes=num_episodes, gamma=gamma, alpha=0.1, epsilon=0.1)
     plot_value_function_from_dict(Q3, title="Q-Learning Value Function")
     policy_net, rewards, epsilons = train_dqn_blackjack(
-        env, num_episodes=100000, gamma=gamma
+        env, num_episodes=num_episodes, gamma=gamma
     )
     plot_value_function_from_dqn(policy_net, env, title="DQN Value Function")
     plot_training_info(rewards, epsilons)

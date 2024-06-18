@@ -12,3 +12,8 @@ def epsilon_greedy_policy(Q, state, epsilon):
             return np.random.choice([0, 1])
         # 利用: 选择具有最大Q值的动作
         return np.argmax(action_values)
+
+
+def encode_state(state):
+    # Example state: {'player': 1, 'banker': 1, 'usable_ace': True}
+    return [state["player"], state["banker"], 1 if state["ace"] else 0]
