@@ -9,6 +9,8 @@ from Methods import (
     train_dqn_blackjack,
     q_learning,
     compare_methods,
+    save_dict_to_json,
+    save_net_to_model
 )
 from draw import (
     plot_value_function_from_dict,
@@ -18,9 +20,8 @@ from draw import (
     plot_optimal_policy_from_dqn,
 )
 
+
 env = gym.make("Blackjack/Blackjack-v0")
-
-
 
 
 # 依次运行四个方法
@@ -45,6 +46,12 @@ def main():
         methods = {"MC": Q1, "Sarsa": Q2, "Q-Learning": Q3, "DQN": policy_net}
         compare_methods(env, methods, num_episodes=1000)
         
+        save_dict_to_json(Q1, "MC_{}_value.json".format(num_episodes))
+        save_dict_to_json(Q2, "Sarsa_{}_value.json".format(num_episodes))
+        save_dict_to_json(Q3, "Q_Learning_{}_value.json".format(num_episodes))
+        save_net_to_model(policy_net, "DQN_{}_model.pth".format(num_episodes))
+                          
+
 
 if __name__ == "__main__":
     main()
