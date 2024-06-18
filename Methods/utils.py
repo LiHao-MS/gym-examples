@@ -29,7 +29,7 @@ def greedy_policy(Q, state):
 
 
 def save_dict_to_pickle(dic, filename):
-    with open("Models/{}.json".format(filename), "w") as f:
+    with open("Models/{}.json".format(filename), "wb") as f:
         pickle.dump(dic, f)
 
 

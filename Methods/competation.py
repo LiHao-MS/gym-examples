@@ -21,7 +21,7 @@ def compare_methods(env, methods, num_episodes=1000):
             state, _ = env.reset()
             done = False
             total_reward = 0
-           
+
             while not done:
                 # Select action based on the type of method (dict or model)
                 if isinstance(method, dict):
@@ -49,7 +49,9 @@ def compare_methods(env, methods, num_episodes=1000):
         # Compute the average reward
         average_reward = np.mean(total_rewards)
         results[name] = average_reward
-        print(f"Method: {name}, Average Reward: {average_reward}")
+        print(
+            f"Num_episodes: {num_episodes}, Method: {name}, Average Reward: {average_reward}"
+        )
 
     return results
 
