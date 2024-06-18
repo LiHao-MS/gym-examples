@@ -3,10 +3,20 @@ from collections import defaultdict
 from Methods.utils import epsilon_greedy_policy
 
 
-def q_learning(env, num_episodes, gamma, alpha, epsilon):
+def q_learning(
+    env,
+    num_episodes,
+    gamma,
+    alpha,
+    epsilon_start=1.0,
+    epsilon_end=0.001,
+    epsilon_decay=0.995,
+):
     Q = defaultdict(float)  # 初始化Q值字典，默认值为float类型
-
+    epsilon = epsilon_start
     for episode in range(num_episodes):
+        if episode % 50 == 0:
+            epsilon = max(epsilon_end, epsilon_decay * epsilon)
         state, _ = env.reset()  # 重置环境，获取初始状态
         done = False
         state = frozenset(state.items())

@@ -2,10 +2,21 @@ import numpy as np
 from collections import defaultdict
 from Methods.utils import epsilon_greedy_policy
 
-def sarsa(env, num_episodes, gamma, alpha, epsilon):
-    Q = defaultdict(float)
 
-    for _ in range(num_episodes):
+def sarsa(
+    env,
+    num_episodes,
+    gamma,
+    alpha,
+    epsilon_start=1.0,
+    epsilon_end=0.001,
+    epsilon_decay=0.995,
+):
+    Q = defaultdict(float)
+    epsilon = epsilon_start
+    for k in range(num_episodes):
+        if k % 50 == 0:
+            epsilon = max(epsilon_end, epsilon_decay * epsilon)
         state, _ = env.reset()
         state = frozenset(state.items())
         action = epsilon_greedy_policy(Q, state, epsilon)

@@ -40,7 +40,7 @@ def compare_methods(env, methods, num_episodes=1000):
                         action = torch.argmax(action_values).item()
 
                 # Take action in the environment
-                next_state, reward, done, _ = env.step(action)
+                next_state, reward, done, _, info = env.step(action)
                 total_reward += reward
                 state = next_state
 

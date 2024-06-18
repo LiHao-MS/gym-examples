@@ -1,5 +1,5 @@
 import numpy as np
-import json
+import pickle
 import torch
 
 # ε-greedy策略
@@ -28,10 +28,19 @@ def greedy_policy(Q, state):
     return np.argmax(action_values)
 
 
-def save_dict_to_json(dic, filename):
+def save_dict_to_pickle(dic, filename):
     with open("Models/{}.json".format(filename), "w") as f:
-        json.dump(dic, f)
+        pickle.dump(dic, f)
 
 
 def save_net_to_model(net, filename):
     torch.save(net.state_dict(), "Models/{}.pth".format(filename))
+
+
+def load_dict_from_pickle(filename):
+    # Load the dictionary from a pickle file
+    with open(f"Models/{filename}.pkl", "rb") as f:
+        return pickle.load(f)
+    
+def load_net_from_model(net, filename):
+    return net.load_state_dict(torch.load(f"Models/{filename}.pth"))   

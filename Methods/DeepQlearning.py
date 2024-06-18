@@ -24,9 +24,9 @@ def epsilon_greedy_policy(state, epsilon, policy_net, env):
     if random.random() > epsilon:
         state = torch.tensor(encode_state(state), dtype=torch.float)
         with torch.no_grad():
-            return policy_net(state).max(0)[-1].item()
+            return policy_net(state).max(-1)[1].item()
     else:
-        return env.action_space.sample()
+        return np.random.choice([0, 1])
 
 
 def optimize_model(memory, batch_size, policy_net, target_net, optimizer, gamma):
@@ -57,9 +57,6 @@ def optimize_model(memory, batch_size, policy_net, target_net, optimizer, gamma)
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-
-
-import matplotlib.pyplot as plt
 
 
 def train_dqn_blackjack(
@@ -101,11 +98,11 @@ def train_dqn_blackjack(
 
         rewards.append(total_reward)
         epsilons.append(epsilon)
-        epsilon = max(epsilon_end, epsilon_decay * epsilon)
+       
 
         if episode % 50 == 0:
             target_net.load_state_dict(policy_net.state_dict())
+            epsilon = max(epsilon_end, epsilon_decay * epsilon)
             # print(f"Episode {episode}: Reward {total_reward}, Epsilon {epsilon}")
 
     return policy_net, rewards, epsilons
-

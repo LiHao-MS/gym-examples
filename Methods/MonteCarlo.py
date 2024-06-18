@@ -19,13 +19,16 @@ def run_episode(env, Q, epsilon):
 
 
 # First Vist
-def monte_carlo_prediction(env, num_episodes, gamma):
+def monte_carlo_prediction(
+    env, num_episodes, gamma, epsilon_start=1.0, epsilon_end=0.001, epsilon_decay=0.995
+):
     Q = defaultdict(float)
     N = defaultdict(int)
-    epsilon = 0.3
+
+    epsilon = epsilon_start
     for k in range(num_episodes):
-        if k % 100 == 0:
-            epsilon = max(0.01, epsilon - 0.01)
+        if k % 50 == 0:
+            epsilon = max(epsilon_end, epsilon_decay * epsilon)
         episode = run_episode(env, Q, epsilon)
         G = 0
         first_occurrences = {}

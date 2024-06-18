@@ -15,12 +15,12 @@ class BlackjackEnv(gym.Env):
             "render_fps": 4
         }
 
-    def __init__(self, render_mode=None, size=5, seed=1):
+    def __init__(self, render_mode=None, size=5, seed=0):
 
         self.observation_space = spaces.Dict(
             {
-                "player": spaces.Box(1, 10, shape=(1,), dtype=int),
-                "banker": spaces.Box(1, 10, shape=(1,), dtype=int),
+                "player": spaces.Box(1, 22, shape=(1,), dtype=int),
+                "banker": spaces.Box(1, 22, shape=(1,), dtype=int),
                 "ace": spaces.Discrete(2),
             }
         )
@@ -35,8 +35,8 @@ class BlackjackEnv(gym.Env):
         I.e. 0 corresponds to "twist", 1 to "stick" etc.
         """
         self._action_to_direction = {
-            0: np.array([0]),
-            1: np.array([1]),
+            0: 0,
+            1: 1,
         }
         self.render_mode = render_mode
 
@@ -45,29 +45,29 @@ class BlackjackEnv(gym.Env):
             self._ace = self._ace.item()
         if isinstance(self._banker_show, np.ndarray):
             self._banker_show = self._banker_show.item()
-        if isinstance(self._player_state, np.ndarray):
-            self._player_state = self._player_state.item()
-        return {"player": self._player_state, "banker": self._banker_show, "ace": self._ace}
+        if isinstance(self.player_state, np.ndarray):
+            self.player_state = self.player_state.item()
+        return {"player": self.player_state, "banker": self._banker_show, "ace": self._ace}
 
     def _update_banker_state(self):
-        while self._banker_state < 17:
+        while self.banker_state < 17:
             new_card = self.deck[self._index]
             self._index += 1
-            self._banker_state += new_card.clip(
+            self.banker_state += new_card.clip(
                 min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"]
             )
             if new_card == 1:
-                if self._banker_state + 10 <= 21:
-                    self._banker_state += 10
+                if self.banker_state + 10 <= 21:
+                    self.banker_state += 10
                     self._banker_ace = True 
             self._banker_ace = self._banker_ace or new_card == 1
-        if self._banker_state > 21 and self._banker_ace:
-            self._banker_state -= 10
-        return self._banker_state
+        if self.banker_state > 21 and self._banker_ace:
+            self.banker_state -= 10
+        return self.banker_state
 
     @staticmethod
     def get_real_point(obs: int, ace: bool):
-        if not ace or np.abs(obs - 21) < 10:
+        if not ace or 21 - obs < 10:
             return obs
         else:
             return obs + 10
@@ -90,17 +90,17 @@ class BlackjackEnv(gym.Env):
         _player_state = np.array([self.deck[0], self.deck[1]]).clip(
             min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"]
         )
-        self._player_state = _player_state.sum()
+        self.player_state = _player_state.sum()
         _banker_state = np.array([self.deck[2], self.deck[3]]).clip(
             min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"]
         )
         self._banker_show = self.deck[2]
-        self._banker_state = _banker_state.sum()
+        self.banker_state = _banker_state.sum()
 
-        self._ace = np.any(self._player_state == 1)
-        self._banker_ace = np.any(self._banker_state == 1)
+        self._ace = np.any(_player_state == 1)
+        self._banker_ace = np.any(_banker_state == 1)
         if self._banker_ace:
-            self._banker_state += 10
+            self.banker_state += 10
         observation = self._get_obs()
         info = {}
 
@@ -113,7 +113,7 @@ class BlackjackEnv(gym.Env):
         if action == 0:
             new_card = self.deck[self._index]
             self._index += 1
-            self._player_state += new_card.clip(
+            self.player_state += new_card.clip(
                 min=BlackjackEnv.metadata["min_point"], max=BlackjackEnv.metadata["max_point"]
             )
 
@@ -121,12 +121,12 @@ class BlackjackEnv(gym.Env):
         else:
             self._update_banker_state()
 
-        terminated = action == 1 or self._player_state.item() > 21
+        terminated = action == 1 or self.player_state.item() > 21
 
         reward = 0
         if terminated:
-            player_fine_score =  BlackjackEnv.get_real_point(self._player_state, self._ace)
-            banker_fine_score =  BlackjackEnv.get_real_point(self._banker_state, self._banker_ace)
+            player_fine_score =  BlackjackEnv.get_real_point(self.player_state, self._ace)
+            banker_fine_score =  BlackjackEnv.get_real_point(self.banker_state, self._banker_ace)
             if player_fine_score > banker_fine_score:
                 reward = 1
             elif player_fine_score == banker_fine_score:
