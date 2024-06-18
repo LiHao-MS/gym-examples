@@ -111,10 +111,7 @@ class BlackjackEnv(gym.Env):
         else:
             self._update_banker_state()
 
-        terminated = (
-            action == 1 
-            or self._player_state > 21
-        )
+        terminated = action == 1 or self._player_state.item() > 21
 
         reward = 0
         if terminated:
@@ -130,6 +127,8 @@ class BlackjackEnv(gym.Env):
         observation = self._get_obs()
         info = {}
 
+        if isinstance(terminated, np.ndarray):
+            terminated = terminated.item()
         return observation, reward, terminated, False, info
 
     def close(self):

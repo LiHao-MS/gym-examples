@@ -11,9 +11,10 @@ def q_learning(env, num_episodes, gamma, alpha, epsilon):
         done = False
         state = frozenset(state.items())
         while not done:
+            # 根据当前Q值和epsilon-greedy策略选择动作
             action = epsilon_greedy_policy(
                 Q, state, epsilon
-            )  # 根据当前Q值和epsilon-greedy策略选择动作
+            )  
             next_state, reward, done, _, info = env.step(action)  # 执行动作，获取新状态和奖励
             next_state = frozenset(next_state.items())
             # Q-Learning核心更新公式

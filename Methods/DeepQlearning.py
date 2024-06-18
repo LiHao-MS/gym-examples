@@ -24,7 +24,7 @@ def epsilon_greedy_policy(state, epsilon, policy_net, env):
     if random.random() > epsilon:
         state = torch.tensor(encode_state(state), dtype=torch.float)
         with torch.no_grad():
-            return policy_net(state).max(1)[1].item()
+            return policy_net(state).max(0)[-1].item()
     else:
         return env.action_space.sample()
 
@@ -51,7 +51,7 @@ def optimize_model(memory, batch_size, policy_net, target_net, optimizer, gamma)
     done_batch = torch.tensor(done_batch, dtype=torch.float)
 
     state_action_values = policy_net(state_batch).gather(1, action_batch.unsqueeze(1))
-    next_state_values = target_net(next_state_batch).max(1)[0].detach()
+    next_state_values = target_net(next_state_batch).max(-1)[0].detach()
     expected_state_action_values = (
         next_state_values * gamma * (1 - done_batch)
     ) + reward_batch
@@ -64,13 +64,16 @@ def optimize_model(memory, batch_size, policy_net, target_net, optimizer, gamma)
     optimizer.step()
 
 
+import matplotlib.pyplot as plt
+
+
 def train_dqn_blackjack(
     env,
     num_episodes=1000,
     batch_size=64,
     gamma=0.99,
     epsilon_start=1.0,
-    epsilon_end=0.01,
+    epsilon_end=0.001,
     epsilon_decay=0.995,
     lr=0.001,
 ):
@@ -86,18 +89,28 @@ def train_dqn_blackjack(
     memory = []
 
     epsilon = epsilon_start
+    rewards = []  # List to store total rewards per episode
+    epsilons = []  # List to store epsilon values over training
+
     for episode in range(num_episodes):
         state, _ = env.reset()
+        total_reward = 0
         done = False
         while not done:
             action = epsilon_greedy_policy(state, epsilon, policy_net, env)
             next_state, reward, done, _, info = env.step(action)
             memory.append((state, action, reward, next_state, done))
             state = next_state
+            total_reward += reward
             optimize_model(memory, batch_size, policy_net, target_net, optimizer, gamma)
+
+        rewards.append(total_reward)
+        epsilons.append(epsilon)
         epsilon = max(epsilon_end, epsilon_decay * epsilon)
+
         if episode % 50 == 0:
             target_net.load_state_dict(policy_net.state_dict())
-            print(f"Episode {episode}: Reward {reward}, Epsilon {epsilon}")
+            print(f"Episode {episode}: Reward {total_reward}, Epsilon {epsilon}")
 
-    print("Training completed.")
+    return policy_net, rewards, epsilons
+
