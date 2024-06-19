@@ -24,7 +24,7 @@ env = gym.make("Blackjack/Blackjack-v0")
 
 # 依次运行四个方法
 def main():
-    num_episodes_array = [10000, 50000, 100000, 200000]
+    num_episodes_array = [10000, 50000, 100000, 200000, 500000, 1000000]
     gamma = 0.98
     for num_episodes in num_episodes_array:
         Q1 = monte_carlo_prediction(env, num_episodes=num_episodes, gamma=gamma)
