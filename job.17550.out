@@ -1,0 +1,41 @@
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:127: UserWarning: [33mWARN: The obs returned by the `reset()` method should be an int or np.int64, actual type: <class 'numpy.bool_'>[0m
+  logger.warn(f"{pre} should be an int or np.int64, actual type: {type(obs)}")
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.[0m
+  logger.warn(f"{pre} is not within the observation space.")
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:131: UserWarning: [33mWARN: The obs returned by the `reset()` method was expecting a numpy array, actual type: <class 'numpy.int64'>[0m
+  logger.warn(
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/spaces/box.py:240: UserWarning: [33mWARN: Casting input x to numpy array.[0m
+  gym.logger.warn("Casting input x to numpy array.")
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:127: UserWarning: [33mWARN: The obs returned by the `step()` method should be an int or np.int64, actual type: <class 'numpy.bool_'>[0m
+  logger.warn(f"{pre} should be an int or np.int64, actual type: {type(obs)}")
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.[0m
+  logger.warn(f"{pre} is not within the observation space.")
+/home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:131: UserWarning: [33mWARN: The obs returned by the `step()` method was expecting a numpy array, actual type: <class 'numpy.int64'>[0m
+  logger.warn(
+/home/chengr_lab/cse12132340/gym-examples/draw.py:17: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`). Consider using `matplotlib.pyplot.close()`.
+  fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(20, 11), subplot_kw={"projection": "3d"})
+Num_episodes: 10000, Method: MC, Average Reward: -0.08726
+Num_episodes: 10000, Method: Sarsa, Average Reward: -0.13546
+Num_episodes: 10000, Method: Q-Learning, Average Reward: -0.10922
+Num_episodes: 10000, Method: DQN, Average Reward: -0.0604
+Num_episodes: 50000, Method: MC, Average Reward: -0.07004
+Num_episodes: 50000, Method: Sarsa, Average Reward: -0.15868
+Num_episodes: 50000, Method: Q-Learning, Average Reward: -0.16576
+Num_episodes: 50000, Method: DQN, Average Reward: -0.06006
+Num_episodes: 100000, Method: MC, Average Reward: -0.06524
+Num_episodes: 100000, Method: Sarsa, Average Reward: -0.16646
+Num_episodes: 100000, Method: Q-Learning, Average Reward: -0.16694
+Num_episodes: 100000, Method: DQN, Average Reward: -0.05032
+Num_episodes: 200000, Method: MC, Average Reward: -0.05058
+Num_episodes: 200000, Method: Sarsa, Average Reward: -0.16846
+Num_episodes: 200000, Method: Q-Learning, Average Reward: -0.18458
+Num_episodes: 200000, Method: DQN, Average Reward: -0.05378
+Num_episodes: 500000, Method: MC, Average Reward: -0.06104
+Num_episodes: 500000, Method: Sarsa, Average Reward: -0.17412
+Num_episodes: 500000, Method: Q-Learning, Average Reward: -0.16418
+Num_episodes: 500000, Method: DQN, Average Reward: -0.04414
+Num_episodes: 1000000, Method: MC, Average Reward: -0.05732
+Num_episodes: 1000000, Method: Sarsa, Average Reward: -0.17542
+Num_episodes: 1000000, Method: Q-Learning, Average Reward: -0.18464
+Num_episodes: 1000000, Method: DQN, Average Reward: -0.05112
+All Done!
