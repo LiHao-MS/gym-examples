@@ -56,7 +56,7 @@ figure(image("pics/Sarsa Prediction Value Function - 100000 Episodes.png"), capt
 figure(image("pics/MC Prediction Value Function - 200000 Episodes.png"), caption: [Monte Carlo with 200000 Episodes]), <d>,
 figure(image("pics/Sarsa Prediction Value Function - 200000 Episodes.png"), caption: [Sarsa with 200000 Episodes]), <d1>,
 columns: (1fr, 1fr),
-  caption: [Figures of Monte Carlo and Sarsa.],
+  caption: [Value Functions of Monte Carlo and Sarsa],
   label: <full>,
 )
 
@@ -70,7 +70,7 @@ figure(image("pics/DQN Value Function - 100000 Episodes.png"), caption: [Deep Q-
 figure(image("pics/Q-Learning Value Function - 200000 Episodes.png"), caption: [Q-Learning with 200000 Episodes]), <d>,
 figure(image("pics/DQN Value Function - 200000 Episodes.png"), caption: [Deep Q-Learning with 200000 Episodes]), <d1>,
 columns: (1fr, 1fr),
-  caption: [Figures of Q-Learning and Deep Q-Learning.],
+  caption: [Value Functions of Q-Learning and Deep Q-Learning],
   label: <full>,
 )
 
@@ -87,8 +87,19 @@ A detailed performance comparison is presented for 50,000 episodes across differ
   [10000],[-0.08376],[-0.10722],[-0.09782],[-0.05004],
   [50000],[-0.07138],[-0.15614],[-0.16946],[-0.04928],
   [100000],[-0.06492],[-0.17498],[-0.17292],[-0.05002], 
-  [200000],[-0.0622],[-0.17822],[-0.15516],[-0.04538]
+  [200000],[-0.06220],[-0.17822],[-0.15516],[-0.04538]
 )
 
 == Conclusion
 All implemented methods were capable of effectively learning strategies for the simplified blackjack environment. Deep Q-Learning showed particular promise due to its ability to generalize well from the training data, offering smoother value function approximations and potentially more robust strategies in variable game scenarios. The comparative analysis underscores the importance of choosing appropriate learning algorithms based on the specifics of the task and the desired characteristics of the solution, such as learning speed and policy smoothness.
+
+== How to Execute the Code
+
+=== Prerequisites
+The code is implemented using Python and depends on several libraries including NumPy (version 1.26.4), Matplotlib (version 0.3.90), Gymnasium (version 0.29.1), and PyTorch (version 2.3.1). It is essential to have these libraries installed prior to running the code.
+
+=== Execution Instructions
+To execute the program:
+- Run `python main.py` or `python main.py train` to train the models and save them. This process will also generate visualizations and save them in the `pics` directory.
+- Run `python main.py` to load existing models.
+Both training and loading configurations are designed to automatically generate visual outputs and save them in the designated pics folder.

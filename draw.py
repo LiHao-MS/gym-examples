@@ -61,10 +61,10 @@ def plot_value_function_from_dict(value_dict, title="Value Function"):
         ax = axes[idx]
         ax.plot_surface(x, y, z, cmap=cmap)
 
-        ax.set_ylabel("Dealer Showing", fontsize=20)
-        ax.set_xlabel("Player Hand", fontsize=20)
-        ax.set_zlabel("Value", fontsize=20)
-        ax.set_title(f"Usable Ace: {ace}", fontsize=22)
+        ax.set_ylabel("Dealer Showing", fontsize=24)
+        ax.set_xlabel("Player Hand", fontsize=24)
+        ax.set_zlabel("Value", fontsize=24)
+        ax.set_title(f"Usable Ace: {ace}", fontsize=26)
         ax.view_init(ax.elev, -120)
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))
@@ -109,10 +109,10 @@ def plot_value_function_from_dqn(model, title="DQN Value Function"):
         ax = axes[idx]  # 根据索引选择对应的子图
         ax.plot_surface(x, y, z, cmap=cmap)  # 绘制3D图
 
-        ax.set_ylabel("Dealer Showing", fontsize=20)
-        ax.set_xlabel("Player Hand", fontsize=20)
-        ax.set_zlabel("Value", fontsize=20)
-        ax.set_title(f"Usable Ace: {ace}", fontsize=22)
+        ax.set_ylabel("Dealer Showing", fontsize=24)
+        ax.set_xlabel("Player Hand", fontsize=24)
+        ax.set_zlabel("Value", fontsize=24)
+        ax.set_title(f"Usable Ace: {ace}", fontsize=26)
         ax.view_init(ax.elev, -120)
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))
@@ -120,111 +120,3 @@ def plot_value_function_from_dqn(model, title="DQN Value Function"):
     # fig.suptitle(title)
     plt.savefig("pics/{}.png".format(title))
     # plt.show()
-
-
-def plot_training_info(rewards, epsilons, title="Training Performance"):
-    fig, ax1 = plt.subplots()
-    plt.tight_layout()
-
-    color = "tab:red"
-    ax1.set_xlabel("Episode")
-    ax1.set_ylabel("Total Reward", color=color)
-    ax1.plot(rewards, color=color)
-    ax1.tick_params(axis="y", labelcolor=color)
-
-    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-    color = "tab:blue"
-    ax2.set_ylabel("Epsilon", color=color)
-    ax2.plot(epsilons, color=color)
-    ax2.tick_params(axis="y", labelcolor=color)
-
-    fig.tight_layout()  # otherwise the right y-label is slightly clipped
-    # plt.title(title)
-    plt.savefig("pics/{}.png".format(title))
-    # plt.show()
-
-
-def plot_optimal_policy_from_dic(value_dict, title="Optimal Policy Value Function"):
-    player_range = np.arange(2, 23)  # 玩家点数从2到21
-    dealer_range = np.arange(1, 11)  # 庄家展示的牌从1到10
-
-    # 准备数据：遍历玩家和庄家的所有组合，对于每种组合，比较有Ace和无Ace的情况，取最大值
-    x, y = np.meshgrid(dealer_range, player_range)
-    z = np.array(
-        [
-            [
-                max(
-                    value_dict.get(
-                        (frozenset({"player": player, "dealer": dealer, "ace": True}.items()), 0), 0
-                    ),
-                    value_dict.get(
-                        (frozenset({"player": player, "dealer": dealer, "ace": True}.items()), 1), 0
-                    ),
-                    value_dict.get(
-                        (frozenset({"player": player, "dealer": dealer, "ace": False}.items()), 0), 0
-                    ),
-                    value_dict.get(
-                        (frozenset({"player": player, "dealer": dealer, "ace": False}.items()), 1), 0
-                    ),
-                )
-                for dealer in dealer_range
-            ]
-            for player in player_range
-        ]
-    )
-
-    # 创建3D图
-    fig, ax = plt.subplots(subplot_kw={"projection": "3d"}, figsize=(12, 10))
-    surf = ax.plot_surface(x, y, z, cmap=cmap)
-    plt.tight_layout()
-
-    ax.set_xlabel("dealer Showing")
-    ax.set_ylabel("Player Hand")
-    ax.set_zlabel("Maximum Value")
-    # ax.set_title(title)
-    ax.view_init(ax.elev, -120)
-
-    # 添加颜色条
-    fig.colorbar(surf, ax=ax, shrink=0.5, aspect=5)
-
-    # 保存图像
-    plt.savefig("pics/{}.png".format(title))
-    # plt.show()
-
-
-def plot_optimal_policy_from_dqn(model, title="Optimal Policy Value Function"):
-    player_range = np.arange(2, 22)  # 玩家点数从2到21
-    dealer_range = np.arange(1, 14)  # 庄家展示的牌从1到10
-
-    # 准备数据：遍历玩家和庄家的所有组合，对于每种组合，比较有Ace和无Ace的情况，取最大值
-    x, y = np.meshgrid(dealer_range, player_range)
-    z = np.array(
-        [
-            [
-                max(
-                    model(torch.tensor([encode_state({"player": player, "dealer": dealer, "ace": True})], dtype=torch.float32)).max(1)[0].item(),
-                    model(torch.tensor([encode_state({"player": player, "dealer": dealer, "ace": False})], dtype=torch.float32)).max(1)[0].item()
-                )
-                for dealer in dealer_range
-            ]
-            for player in player_range
-        ]
-    )
-
-    # 创建3D图
-    fig, ax = plt.subplots(subplot_kw={"projection": "3d"}, figsize=(12, 10))
-    surf = ax.plot_surface(x, y, z, cmap=cmap)
-    plt.tight_layout()
-
-    ax.set_xlabel("dealer Showing")
-    ax.set_ylabel("Player Hand")
-    ax.set_zlabel("Maximum Value")
-    ax.set_title(title)
-    ax.view_init(ax.elev, -120)
-
-    # 添加颜色条
-    fig.colorbar(surf, ax=ax, shrink=0.5, aspect=5)
-
-    # 保存图像
-    plt.savefig("pics/{}.png".format(title))
-    # plt.show(

@@ -1,8 +1,6 @@
-import Blackjack
 import gymnasium as gym
-import numpy as np
-import json
-import torch
+import Blackjack
+import sys
 from Methods import (
     monte_carlo_prediction,
     sarsa,
@@ -18,9 +16,6 @@ from Methods import (
 from draw import (
     plot_value_function_from_dict,
     plot_value_function_from_dqn,
-    plot_training_info,
-    plot_optimal_policy_from_dic,
-    plot_optimal_policy_from_dqn,
 )
 
 
@@ -34,18 +29,15 @@ def main():
     for num_episodes in num_episodes_array:
         Q1 = monte_carlo_prediction(env, num_episodes=num_episodes, gamma=gamma)
         plot_value_function_from_dict(Q1, title="MC Prediction Value Function - {} Episodes".format(num_episodes))
-        # plot_optimal_policy_from_dic(Q1, title="MC Prediction Optimal Value Function - {} Episodes".format(num_episodes))
         Q2 = sarsa(env, num_episodes=num_episodes, gamma=gamma, alpha=0.1)
         plot_value_function_from_dict(Q2, title="Sarsa Prediction Value Function - {} Episodes".format(num_episodes))
-        # plot_optimal_policy_from_dic(Q2, title="Sarsa Prediction Optimal Value Function - {} Episodes".format(num_episodes))
         Q3 = q_learning(env, num_episodes=num_episodes, gamma=gamma, alpha=0.1)
         plot_value_function_from_dict(Q3, title="Q-Learning Value Function - {} Episodes".format(num_episodes))
         policy_net = train_dqn_blackjack(
             env, num_episodes=num_episodes, gamma=gamma
         )
         plot_value_function_from_dqn(policy_net, title="DQN Value Function - {} Episodes".format(num_episodes))
-        # plot_optimal_policy_from_dqn(policy_net, title="DQN Optimal Policy - {} Episodes".format(num_episodes))
-        # plot_training_info(rewards, epsilons, title="DQN Training Performance - {} Episodes".format(num_episodes))
+  
         methods = {"MC": Q1, "Sarsa": Q2, "Q-Learning": Q3, "DQN": policy_net}
         compare_methods(env, methods, num_episodes=num_episodes)
 
@@ -72,10 +64,15 @@ def load():
         plot_value_function_from_dqn(policy_net, title="DQN Value Function - {} Episodes".format(num_episodes))
 
         methods = {"MC": Q1, "Sarsa": Q2, "Q-Learning": Q3, "DQN": policy_net}
-        # compare_methods(env, methods, num_episodes=num_episodes)
+        compare_methods(env, methods, num_episodes=num_episodes)
 
 
 if __name__ == "__main__":
-    # main()
-    load()
-    print("Done")
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "load":
+            load()
+        else:
+            main()
+    else:
+        main()
+    print("All Done!")

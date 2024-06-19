@@ -1,6 +1,6 @@
 import gymnasium as gym
 from gymnasium import spaces
-import pygame
+# import pygame
 import numpy as np
 
 
@@ -78,7 +78,8 @@ class BlackjackEnv(gym.Env):
         # We need the following line to seed self.np_random
         np.random.seed(self.seed)
         self.seed = np.random.randint(0, 2**32 - 1)
-        super().reset(seed=seed)
+        # super().reset(seed=seed)
+        super().reset(seed=None)
 
         # Generate the deck: 1-13 repeated four times
         self.deck = np.tile(
