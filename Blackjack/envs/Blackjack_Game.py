@@ -78,8 +78,7 @@ class BlackjackEnv(gym.Env):
         # We need the following line to seed self.np_random
         np.random.seed(self.seed)
         self.seed = np.random.randint(0, 2**32 - 1)
-        # super().reset(seed=seed)
-        super().reset(seed=None)
+        super().reset(seed=seed)
 
         # Generate the deck: 1-13 repeated four times
         self.deck = np.tile(
