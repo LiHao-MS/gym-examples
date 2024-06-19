@@ -12,20 +12,20 @@
   logger.warn(f"{pre} is not within the observation space.")
 /home/chengr_lab/cse12132340/miniconda3/envs/temp/lib/python3.10/site-packages/gymnasium/utils/passive_env_checker.py:131: UserWarning: [33mWARN: The obs returned by the `step()` method was expecting a numpy array, actual type: <class 'numpy.int64'>[0m
   logger.warn(
-Num_episodes: 10000, Method: MC, Average Reward: -0.453
-Num_episodes: 10000, Method: Sarsa, Average Reward: -0.575
-Num_episodes: 10000, Method: Q-Learning, Average Reward: -0.48
-Num_episodes: 10000, Method: DQN, Average Reward: -0.385
-Num_episodes: 50000, Method: MC, Average Reward: -0.396
-Num_episodes: 50000, Method: Sarsa, Average Reward: -0.56
-Num_episodes: 50000, Method: Q-Learning, Average Reward: -0.545
-Num_episodes: 50000, Method: DQN, Average Reward: -0.411
-Num_episodes: 100000, Method: MC, Average Reward: -0.369
-Num_episodes: 100000, Method: Sarsa, Average Reward: -0.566
-Num_episodes: 100000, Method: Q-Learning, Average Reward: -0.631
-Num_episodes: 100000, Method: DQN, Average Reward: -0.429
-Num_episodes: 200000, Method: MC, Average Reward: -0.432
-Num_episodes: 200000, Method: Sarsa, Average Reward: -0.584
-Num_episodes: 200000, Method: Q-Learning, Average Reward: -0.623
-Num_episodes: 200000, Method: DQN, Average Reward: -0.382
+Num_episodes: 10000, Method: MC, Average Reward: -0.102
+Num_episodes: 10000, Method: Sarsa, Average Reward: -0.137
+Num_episodes: 10000, Method: Q-Learning, Average Reward: -0.049
+Num_episodes: 10000, Method: DQN, Average Reward: -0.028
+Num_episodes: 50000, Method: MC, Average Reward: -0.107
+Num_episodes: 50000, Method: Sarsa, Average Reward: -0.172
+Num_episodes: 50000, Method: Q-Learning, Average Reward: -0.168
+Num_episodes: 50000, Method: DQN, Average Reward: -0.028
+Num_episodes: 100000, Method: MC, Average Reward: -0.043
+Num_episodes: 100000, Method: Sarsa, Average Reward: -0.145
+Num_episodes: 100000, Method: Q-Learning, Average Reward: -0.133
+Num_episodes: 100000, Method: DQN, Average Reward: -0.054
+Num_episodes: 200000, Method: MC, Average Reward: 0.0
+Num_episodes: 200000, Method: Sarsa, Average Reward: -0.156
+Num_episodes: 200000, Method: Q-Learning, Average Reward: -0.172
+Num_episodes: 200000, Method: DQN, Average Reward: -0.054
 Done
