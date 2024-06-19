@@ -20,37 +20,51 @@ def plot_value_function_from_dict(value_dict, title="Value Function"):
 
     # 创建3D图的两个子图，对应有无可用Ace
     for idx, ace in enumerate(usable_ace):
-        x, y = np.meshgrid(dealer_range, player_range)
+        x, y = np.meshgrid(player_range, dealer_range)
         z = np.array(
             [
                 [
                     max(
                         value_dict.get(
-                            (frozenset(
-                                {"player": player, "dealer": dealer, "ace": ace}.items()
-                            ), 0),
+                            (
+                                frozenset(
+                                    {
+                                        "player": player,
+                                        "dealer": dealer,
+                                        "ace": ace,
+                                    }.items()
+                                ),
+                                0,
+                            ),
                             0,
                         ),
                         value_dict.get(
-                            (frozenset(
-                                {"player": player, "dealer": dealer, "ace": ace}.items()
-                            ), 1),
+                            (
+                                frozenset(
+                                    {
+                                        "player": player,
+                                        "dealer": dealer,
+                                        "ace": ace,
+                                    }.items()
+                                ),
+                                1,
+                            ),
                             0,
                         ),
                     )
-                    for dealer in dealer_range
+                    for player in player_range
                 ]
-                for player in player_range
+                for dealer in dealer_range
             ]
         )
 
         ax = axes[idx]
         ax.plot_surface(x, y, z, cmap=cmap)
 
-        ax.set_xlabel("Dealer Showing")
-        ax.set_ylabel("Player Hand")
-        ax.set_zlabel("Value")
-        ax.set_title(f"Usable Ace: {ace}")
+        ax.set_ylabel("Dealer Showing", fontsize=20)
+        ax.set_xlabel("Player Hand", fontsize=20)
+        ax.set_zlabel("Value", fontsize=20)
+        ax.set_title(f"Usable Ace: {ace}", fontsize=22)
         ax.view_init(ax.elev, -120)
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))
@@ -84,21 +98,21 @@ def plot_value_function_from_dqn(model, title="DQN Value Function"):
                     )  # 获取给定状态的最大Q值
                 state_values[(player, dealer)] = value
 
-        x, y = np.meshgrid(dealer_range, player_range)  # 创建网格
+        x, y = np.meshgrid(player_range, dealer_range)  # 创建网格
         z = np.array(
             [
-                [state_values.get((player, dealer), 0) for dealer in dealer_range]
-                for player in player_range
+                [state_values.get((player, dealer), 0) for player in player_range]
+                for dealer in dealer_range
             ]
         )
 
         ax = axes[idx]  # 根据索引选择对应的子图
         ax.plot_surface(x, y, z, cmap=cmap)  # 绘制3D图
 
-        ax.set_xlabel("Dealer Showing")
-        ax.set_ylabel("Player Hand")
-        ax.set_zlabel("Value")
-        ax.set_title(f"Usable Ace: {ace}")
+        ax.set_ylabel("Dealer Showing", fontsize=20)
+        ax.set_xlabel("Player Hand", fontsize=20)
+        ax.set_zlabel("Value", fontsize=20)
+        ax.set_title(f"Usable Ace: {ace}", fontsize=22)
         ax.view_init(ax.elev, -120)
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))
